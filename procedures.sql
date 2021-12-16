@@ -12,6 +12,9 @@ CREATE PROCEDURE updateLoadout
     @slot INT,
     @data NVARCHAR(MAX)
 AS
+    IF NOT EXISTS (SELECT p.uuid FROM Player p WHERE p.uuid = @uuid)
+        INSERT INTO Player (uuid, name) VALUES (@uuid, 'Unnamed');
+
     IF EXISTS (SELECT uuid, slot FROM PvpLoadout WHERE uuid = @uuid AND slot = @slot)
         UPDATE PvpLoadout SET loadoutData = @data WHERE uuid = @uuid AND slot = @slot;
     ELSE
@@ -119,6 +122,7 @@ AS
     IF NOT EXISTS (SELECT * FROM Season WHERE number = @seasonNumber)
         THROW 51000, @seasonError, 1;
 
+    DELETE FROM gp FROM GamePlayer gp WHERE gp.gameId IN (SELECT g.id FROM Game g WHERE g.number = @gameNumber AND g.seasonNumber = @seasonNumber);
     DELETE FROM Game WHERE number = @gameNumber AND seasonNumber = @seasonNumber;
 
     DECLARE @date DATETIMEOFFSET = (SELECT TOP 1 value FROM STRING_SPLIT(JSON_VALUE(@json, '$.date'), '['));

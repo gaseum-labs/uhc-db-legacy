@@ -380,3 +380,19 @@ SELECT s.number, s.logo, s.color, s.championColor, p.name FROM Season s
 SELECT * FROM Season;
 
 SELECT * FROM Game;
+
+-----------------------------------------------------------
+
+USE master;
+UPDATE Season SET champion = NULL;
+DELETE FROM GamePlayer;
+DELETE FROM Game;
+DELETE FROM Nickname;
+DELETE FROM PvpLoadout;
+DELETE FROM Player;
+DELETE FROM Team;
+DELETE FROM Season;
+
+------------------------------------------------------
+
+CREATE DATABASE development;
